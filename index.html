@@ -116,38 +116,49 @@
     gap: 10px;
     height: 100vh;
     background: #111;
+    justify-content: center;
+    align-items: flex-start;
   }
   #leftPrediction, #rightHistory {
     background: #222;
     border-radius: 12px;
-    padding: 12px;
-    flex: 1;
+    padding: 8px 10px;
+    flex: 0 0 200px; /* fixed width */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     overflow: hidden;
-    max-width: 280px;
+    height: 220px;
   }
   #leftPrediction h3, #rightHistory h3 {
     color: #00ff99;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .periodNumber {
     font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .signal {
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 900;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     color: #00ff99;
     animation: pulseSignal 2s infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   @keyframes pulseSignal {
     0% { text-shadow: 0 0 5px #00ff99; color: #00ff99; }
@@ -160,17 +171,20 @@
     margin: 0;
     overflow-y: auto;
     flex-grow: 1;
-    max-height: 180px;
+    max-height: 140px;
   }
   .historyList li {
-    padding: 5px 8px;
-    margin-bottom: 5px;
-    border-radius: 8px;
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    border-radius: 6px;
     background: #333;
     display: flex;
     justify-content: space-between;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .historyList li span.number {
     font-weight: 700;
@@ -184,15 +198,16 @@
   #botToggleBtn {
     background: #00ff99;
     border: none;
-    padding: 7px 14px;
-    font-size: 0.95rem;
+    padding: 5px 10px;
+    font-size: 0.8rem;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
     color: #222;
-    margin: 0 auto 12px auto;
+    margin: 0 auto 8px auto;
     display: block;
     transition: background 0.3s ease;
+    white-space: nowrap;
   }
   #botToggleBtn:hover {
     background: #00cc66;
@@ -202,12 +217,15 @@
   @media (max-width: 600px) {
     #mainPage {
       flex-direction: column;
+      height: auto;
+      padding: 10px 5px;
     }
     #leftPrediction, #rightHistory {
       max-width: 100%;
-      font-size: 0.8rem;
-      padding: 10px;
+      font-size: 0.7rem;
+      padding: 8px;
       height: auto !important;
+      flex: none;
     }
   }
 </style>
@@ -235,13 +253,13 @@
   <div id="leftPrediction">
     <h3>Prediction Box</h3>
     <button id="botToggleBtn">Start Bot</button>
-    <div class="periodNumber" id="predictionPeriod">Period: -</div>
-    <div class="signal" id="predictionSignal">-</div>
+    <div class="periodNumber" id="predictionPeriod" title="Prediction Period">Period: -</div>
+    <div class="signal" id="predictionSignal" title="Prediction Signal">-</div>
   </div>
   <div id="rightHistory">
     <h3>Result History</h3>
-    <div class="periodNumber" id="latestPeriod">Latest Period: -</div>
-    <ul class="historyList" id="historyList">
+    <div class="periodNumber" id="latestPeriod" title="Latest Period">Latest Period: -</div>
+    <ul class="historyList" id="historyList" title="Last 4 Results">
       <!-- Last 4 results will appear here -->
     </ul>
   </div>
@@ -344,7 +362,7 @@
     last4.forEach(item => {
       const li = document.createElement('li');
       const bigSmallClass = getBigSmall(item.number) === 'BIG' ? 'big' : 'small';
-      li.innerHTML = `<span class="period">${item.issueNumber}</span> <span class="number ${bigSmallClass}">${item.number}</span>`;
+      li.innerHTML = `<span class="period" title="Period">${item.issueNumber}</span> <span class="number ${bigSmallClass}" title="Number">${item.number}</span>`;
       historyListEl.appendChild(li);
     });
   }
