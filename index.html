@@ -3,312 +3,295 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>0 level</title>
+<title>Prediction Signal Bot with Toggle Button</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
+  /* Basic Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-  body {
-    margin: 0;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    font-family: 'Roboto', sans-serif;
-    color: #f0f0f0;
+  #mainPage {
     display: flex;
-    justify-content: center;
-    padding: 40px 20px;
-    min-height: 100vh;
+    flex-direction: row;
+    padding: 10px;
+    gap: 10px;
+    height: 100vh;
+    background: #111;
   }
 
-  .container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    max-width: 700px;
-    width: 100%;
-    padding: 30px 40px;
-    backdrop-filter: blur(12px);
-  }
-
-  h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    letter-spacing: 1.2px;
-    color: #ffd700;
-    text-shadow: 0 0 8px #ffd700aa;
-  }
-
-  #latestPeriod {
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: #00ff99;
-    text-align: center;
-    margin-bottom: 40px;
-    letter-spacing: 3px;
-    text-shadow:
-      0 0 5px #00ff99,
-      0 0 10px #00ff99,
-      0 0 20px #00ff99,
-      0 0 40px #00ff99;
-  }
-
-  .prediction-box {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    border-radius: 15px;
-    padding: 25px 30px;
-    box-shadow: 0 0 20px #00ff99aa;
-    margin-bottom: 50px;
-  }
-
-  .prediction-box div {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    text-align: center;
-    color: #e0e0e0;
-  }
-
-  #predictionPeriod {
-    font-weight: 700;
-    font-size: 2rem;
-    color: #00e676;
-    letter-spacing: 2px;
-    text-shadow:
-      0 0 5px #00e676,
-      0 0 10px #00e676;
-  }
-
-  #predictionSignal {
-    font-weight: 800;
-    font-size: 2.5rem;
-    padding: 10px 25px;
-    border-radius: 50px;
-    display: inline-block;
-    min-width: 140px;
-    box-shadow: 0 0 15px #ff4081;
-    transition: all 0.3s ease;
-  }
-
-  #predictionSignal.BIG {
-    background: #00c853;
-    color: #e0ffe0;
-    box-shadow:
-      0 0 10px #00c853,
-      0 0 20px #00c853;
-  }
-
-  #predictionSignal.SMALL {
-    background: #d50000;
-    color: #ffe0e0;
-    box-shadow:
-      0 0 10px #d50000,
-      0 0 20px #d50000;
-  }
-
-  #predictionSignal.NEUTRAL {
-    background: #ffab00;
-    color: #fff8e1;
-    box-shadow:
-      0 0 10px #ffab00,
-      0 0 20px #ffab00;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px;
-    font-size: 1rem;
-    color: #ddd;
-  }
-
-  thead tr {
+  #leftPrediction, #rightHistory {
     background: #222;
     border-radius: 12px;
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: 0.9rem;
+    overflow: hidden;
+    max-width: 280px; /* একটু ছোট করা হয়েছে */
   }
-
-  thead th {
-    padding: 12px 15px;
+  #leftPrediction {
+    /* height: 250px;  উচ্চতা স্বাভাবিক রাখা হয়েছে */
+  }
+  #rightHistory {
+    /* height: 250px;  একই উচ্চতা */
+  }
+  #leftPrediction h3, #rightHistory h3 {
+    color: #00ff99;
+    margin-bottom: 8px;
     text-align: center;
+    font-size: 1.1rem;
+  }
+  .periodNumber {
     font-weight: 700;
-    letter-spacing: 1px;
-    color: #ffd700;
-    text-shadow: 0 0 5px #ffd700aa;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .signal {
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #00ff99;
+    animation: pulseSignal 2s infinite alternate;
+  }
+  @keyframes pulseSignal {
+    0% { text-shadow: 0 0 5px #00ff99; color: #00ff99; }
+    50% { text-shadow: 0 0 20px #00ff99; color: #00ffcc; }
+    100% { text-shadow: 0 0 5px #00ff99; color: #00ff99; }
+  }
+  .historyList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 180px;
+  }
+  .historyList li {
+    padding: 5px 8px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background: #333;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .historyList li span.number {
+    font-weight: 700;
+  }
+  .big {
+    color: #ff4d4d;
+  }
+  .small {
+    color: #4d94ff;
   }
 
-  tbody tr {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+  /* Toggle Button */
+  #botToggleBtn {
+    background: #00ff99;
+    border: none;
+    padding: 7px 14px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #222;
+    margin: 0 auto 12px auto;
+    display: block;
     transition: background 0.3s ease;
   }
-
-  tbody tr:hover {
-    background: rgba(255, 255, 255, 0.2);
+  #botToggleBtn:hover {
+    background: #00cc66;
   }
 
-  tbody td {
-    padding: 12px 15px;
-    text-align: center;
-    font-weight: 600;
-    border-radius: 12px;
-  }
-
-  tbody td.color-cell {
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  tbody td.color-red {
-    color: #ff1744;
-    text-shadow: 0 0 5px #ff1744aa;
-  }
-
-  tbody td.color-green {
-    color: #00e676;
-    text-shadow: 0 0 5px #00e676aa;
-  }
-
-  tbody td.color-yellow {
-    color: #ffd600;
-    text-shadow: 0 0 5px #ffd600aa;
-  }
-
-  /* Scroll for smaller screens */
-  @media (max-width: 480px) {
-    .container {
-      padding: 20px 15px;
+  /* Mobile adjustments */
+  @media (max-width: 600px) {
+    #mainPage {
+      flex-direction: column;
     }
-    #latestPeriod {
-      font-size: 2rem;
-    }
-    #predictionSignal {
-      font-size: 2rem;
-      min-width: 110px;
-      padding: 8px 18px;
-    }
-    table {
-      font-size: 0.9rem;
+    #leftPrediction, #rightHistory {
+      max-width: 100%;
+      font-size: 0.8rem;
+      padding: 10px;
+      height: auto !important;
     }
   }
 </style>
 </head>
 <body>
 
-<div class="container" role="main" aria-label="Prediction and Latest History Panel">
-
-  <h2>Latest Period number</h2>
-  <div id="latestPeriod" aria-live="polite" aria-atomic="true" aria-relevant="text">লোড হচ্ছে...</div>
-
-  <div class="prediction-box" aria-label="Prediction Box">
-    <div>Prediction Period: <span id="predictionPeriod" aria-live="polite" aria-atomic="true">-</span></div>
-    <div>Prediction Signal: <span id="predictionSignal" aria-live="polite" aria-atomic="true" class="">-</span></div>
+<div id="mainPage">
+  <div id="leftPrediction">
+    <h3>Prediction Box</h3>
+    <button id="botToggleBtn">Start Bot</button>
+    <div class="periodNumber" id="predictionPeriod">Period: -</div>
+    <div class="signal" id="predictionSignal">-</div>
   </div>
-
-  <h2>Last 10 results</h2>
-  <table aria-describedby="resultsDescription" role="table">
-    <caption id="resultsDescription" class="sr-only">Last 10 Period results</caption>
-    <thead>
-      <tr>
-        <th scope="col">Period Number</th>
-        <th scope="col">Number</th>
-        <th scope="col">Color</th>
-        <th scope="col">Premium</th>
-      </tr>
-    </thead>
-    <tbody id="resultsTableBody">
-      <tr><td colspan="4" style="color:#aaa;">loading...</td></tr>
-    </tbody>
-  </table>
-
+  <div id="rightHistory">
+    <h3>Result History</h3>
+    <div class="periodNumber" id="latestPeriod">Latest Period: -</div>
+    <ul class="historyList" id="historyList">
+      <!-- Last 4 results will appear here -->
+    </ul>
+  </div>
 </div>
 
 <script>
-  const apiUrl = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
+  const apiURL = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
 
-  function bigOrSmall(num) {
-    return num >= 5 ? 'BIG' : 'SMALL';
+  const predictionPeriodEl = document.getElementById('predictionPeriod');
+  const predictionSignalEl = document.getElementById('predictionSignal');
+  const latestPeriodEl = document.getElementById('latestPeriod');
+  const historyListEl = document.getElementById('historyList');
+  const botToggleBtn = document.getElementById('botToggleBtn');
+
+  let botRunning = false;
+  let predictionInterval = null;
+  let historyInterval = null;
+
+  // BIG if number >= 5, else SMALL
+  function getBigSmall(number) {
+    return number >= 5 ? 'BIG' : 'SMALL';
   }
 
-  // Update prediction signal style class
-  function updateSignalClass(signalEl, signal) {
-    signalEl.classList.remove('BIG', 'SMALL', 'NEUTRAL');
-    if (signal === 'BIG') signalEl.classList.add('BIG');
-    else if (signal === 'SMALL') signalEl.classList.add('SMALL');
-    else signalEl.classList.add('NEUTRAL');
-  }
-
-  async function fetchAndUpdate() {
+  // Fetch history from API
+  async function fetchHistory() {
     try {
-      const response = await fetch(apiUrl, {cache: "no-store"});
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      const list = data.data.list;
-
-      if (!list || list.length === 0) {
-        throw new Error('No data received');
+      const res = await fetch(apiURL);
+      const data = await res.json();
+      if (data.code === 0 && data.data && data.data.list) {
+        return data.data.list;
       }
-
-      // Latest Period Number
-      const latestPeriodNumber = list[0].issueNumber;
-      document.getElementById('latestPeriod').textContent = latestPeriodNumber;
-
-      // Prediction Period Number (+1)
-      const prefix = latestPeriodNumber.slice(0, -5);
-      const lastFive = latestPeriodNumber.slice(-5);
-      const incremented = (parseInt(lastFive, 10) + 1).toString().padStart(5, '0');
-      document.getElementById('predictionPeriod').textContent = prefix + incremented;
-
-      // --- Prediction Logic (last 100 results) ---
-      const last100 = list.slice(0, 100);
-      let bigCount = 0;
-      let smallCount = 0;
-
-      last100.forEach(item => {
-        if (bigOrSmall(parseInt(item.number, 10)) === 'BIG') bigCount++;
-        else smallCount++;
-      });
-
-      let predictionSignal = '';
-      if (bigCount > smallCount) predictionSignal = 'BIG';
-      else if (smallCount > bigCount) predictionSignal = 'SMALL';
-      else predictionSignal = 'waiting';
-
-      const predictionSignalEl = document.getElementById('predictionSignal');
-      predictionSignalEl.textContent = predictionSignal;
-      updateSignalClass(predictionSignalEl, predictionSignal);
-
-      // --- Last 10 results table update ---
-      const last10 = list.slice(0, 10);
-      const tbody = document.getElementById('resultsTableBody');
-      tbody.innerHTML = '';
-      last10.forEach(item => {
-        const tr = document.createElement('tr');
-
-        let colorClass = '';
-        if (item.color.toLowerCase() === 'red') colorClass = 'color-red';
-        else if (item.color.toLowerCase() === 'green') colorClass = 'color-green';
-        else if (item.color.toLowerCase() === 'yellow') colorClass = 'color-yellow';
-
-        tr.innerHTML = `
-          <td>${item.issueNumber}</td>
-          <td>${item.number}</td>
-          <td class="color-cell ${colorClass}">${item.color}</td>
-          <td>${item.premium}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-    } catch (error) {
-      console.error('Error fetching or processing data:', error);
-      document.getElementById('latestPeriod').textContent = 'ডেটা লোড করতে সমস্যা হয়েছে';
-      document.getElementById('predictionPeriod').textContent = '-';
-      document.getElementById('predictionSignal').textContent = '-';
-      updateSignalClass(document.getElementById('predictionSignal'), '');
-      document.getElementById('resultsTableBody').innerHTML = `<tr><td colspan="4" style="color:#ff6b6b; text-align:center;">ডেটা লোড করতে সমস্যা হয়েছে</td></tr>`;
+      return [];
+    } catch (e) {
+      console.error('API fetch error:', e);
+      return [];
     }
   }
 
-  // Initial fetch and intervals
-  fetchAndUpdate();
-  setInterval(fetchAndUpdate, 1000);
+  // Update history box every 1 second
+  async function updateHistory() {
+    const history = await fetchHistory();
+    if (history.length === 0) return;
+
+    // Sort descending by issueNumber
+    const sorted = history.sort((a,b) => b.issueNumber.localeCompare(a.issueNumber));
+
+    // Latest period
+    const latestIssue = sorted[0];
+    latestPeriodEl.textContent = 'Latest Period: ' + latestIssue.issueNumber;
+
+    // Last 4 results for right box
+    const last4 = sorted.slice(0,4);
+    historyListEl.innerHTML = '';
+    last4.forEach(item => {
+      const li = document.createElement('li');
+      const bigSmallClass = getBigSmall(item.number) === 'BIG' ? 'big' : 'small';
+      li.innerHTML = `<span class="period">${item.issueNumber}</span> <span class="number ${bigSmallClass}">${item.number}</span>`;
+      historyListEl.appendChild(li);
+    });
+  }
+
+  // Prediction logic: last 60 history, check last 3 results for BIG/SMALL majority
+  async function updatePrediction() {
+    const history = await fetchHistory();
+    if (history.length === 0) return;
+
+    // Sort descending by issueNumber
+    const sorted = history.sort((a,b) => b.issueNumber.localeCompare(a.issueNumber));
+
+    // Latest period number
+    const latestIssue = sorted[0];
+    const latestPeriodNumber = latestIssue.issueNumber;
+
+    // Prediction Period = latestPeriodNumber + 1 (increment last digits)
+    let prefix = latestPeriodNumber.slice(0, 13);
+    let suffix = latestPeriodNumber.slice(13);
+    let suffixNum = parseInt(suffix || '0', 10);
+    suffixNum++;
+    let predictionPeriod = prefix + suffixNum.toString().padStart(suffix.length || 1, '0');
+    predictionPeriodEl.textContent = 'Period: ' + predictionPeriod;
+
+    // Last 60 results
+    const last60 = sorted.slice(0, 60);
+
+    // Check last 3 results for BIG/SMALL majority
+    const last3 = last60.slice(0, 3);
+    let bigCount = 0, smallCount = 0;
+    last3.forEach(item => {
+      if (getBigSmall(item.number) === 'BIG') bigCount++;
+      else smallCount++;
+    });
+
+    let signal = 'NEUTRAL';
+    if (bigCount > smallCount && bigCount >= 2) signal = 'BIG';
+    else if (smallCount > bigCount && smallCount >= 2) signal = 'SMALL';
+
+    predictionSignalEl.textContent = signal;
+    if(signal === 'BIG') {
+      predictionSignalEl.style.color = '#ff4d4d';
+      predictionSignalEl.style.textShadow = '0 0 20px #ff4d4d';
+    } else if(signal === 'SMALL') {
+      predictionSignalEl.style.color = '#4d94ff';
+      predictionSignalEl.style.textShadow = '0 0 20px #4d94ff';
+    } else {
+      predictionSignalEl.style.color = '#aaa';
+      predictionSignalEl.style.textShadow = 'none';
+    }
+  }
+
+  // Start bot
+  function startBot() {
+    if (botRunning) return;
+    botRunning = true;
+    botToggleBtn.textContent = 'Stop Bot';
+
+    // Initial update immediately
+    updatePrediction();
+    updateHistory();
+
+    predictionInterval = setInterval(updatePrediction, 2000);
+    historyInterval = setInterval(updateHistory, 1000);
+  }
+
+  // Stop bot
+  function stopBot() {
+    if (!botRunning) return;
+    botRunning = false;
+    botToggleBtn.textContent = 'Start Bot';
+
+    clearInterval(predictionInterval);
+    clearInterval(historyInterval);
+
+    // Clear prediction info
+    predictionPeriodEl.textContent = 'Period: -';
+    predictionSignalEl.textContent = '-';
+    predictionSignalEl.style.color = '#00ff99';
+    predictionSignalEl.style.textShadow = '0 0 5px #00ff99';
+  }
+
+  botToggleBtn.addEventListener('click', () => {
+    if (botRunning) {
+      stopBot();
+    } else {
+      startBot();
+    }
+  });
+
+  // Initially bot stopped
+  stopBot();
 </script>
 
 </body>
