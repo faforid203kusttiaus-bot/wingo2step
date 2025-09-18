@@ -3,337 +3,128 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Loading, Login & Prediction Signal Bot</title>
+<title>Compact Prediction Bot</title>
 <style>
-  /* Basic Reset */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  body {
+    margin: 0; padding: 10px;
     background: #121212;
-    color: #eee;
-    height: 100vh;
-    overflow: hidden;
+    color: #00ff99;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
   }
-
-  /* Centering for loading and login */
-  #loadingContainer, #loginPage {
+  .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    justify-content: center;
-    height: 100vh;
-  }
-
-  /* Loading Bar */
-  #loadingBar {
-    width: 300px;
-    height: 25px;
-    background: #333;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 0 10px #00ff99;
-  }
-  #loadingProgress {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #00ff99, #00cc66);
-    border-radius: 15px 0 0 15px;
-    animation: pulseLoading 2s infinite alternate;
-  }
-  @keyframes pulseLoading {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(1.3); }
-    100% { filter: brightness(1); }
-  }
-  #loadingText {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #00ff99;
-    text-shadow: 0 0 10px #00ff99;
-  }
-
-  /* Login Page */
-  #loginPage {
+    max-width: 400px;
+    margin: auto;
+    padding: 15px;
     background: #222;
-    padding: 30px 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #00ff99;
-    width: 320px;
+    border-radius: 10px;
   }
-  #loginPage h2 {
+  .box {
+    flex: 1;
+  }
+  h3 {
+    margin: 0 0 10px 0;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 20px;
+    font-size: 16px;
     color: #00ff99;
   }
-  #tokenInput {
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-  #loginBtn {
+  button {
+    display: block;
+    margin: 0 auto 10px auto;
+    padding: 5px 12px;
     background: #00ff99;
     border: none;
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 8px;
+    border-radius: 6px;
+    color: #121212;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 700;
-    color: #222;
-    transition: background 0.3s ease;
+    font-size: 14px;
   }
-  #loginBtn:hover {
-    background: #00cc66;
-  }
-  #tokenAnimation {
-    margin-top: 15px;
-    height: 30px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: #00ff99;
+  .period {
     text-align: center;
-    letter-spacing: 3px;
-    animation: bounceToken 1.5s infinite;
-    display: none;
-  }
-  @keyframes bounceToken {
-    0%, 100% { transform: translateY(0); color: #00ff99; text-shadow: 0 0 10px #00ff99; }
-    50% { transform: translateY(-10px); color: #00cc66; text-shadow: 0 0 20px #00cc66; }
-  }
-
-  /* Main Page (Prediction Bot) */
-  #mainPage {
-    display: none;
-    flex-direction: row;
-    padding: 10px;
-    gap: 10px;
-    height: 100vh;
-    background: #111;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  #leftPrediction, #rightHistory {
-    background: #222;
-    border-radius: 12px;
-    padding: 8px 10px;
-    flex: 0 0 200px; /* fixed width */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size: 0.75rem;
-    overflow: hidden;
-    height: 220px;
-  }
-  #leftPrediction h3, #rightHistory h3 {
-    color: #00ff99;
-    margin-bottom: 6px;
-    text-align: center;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .periodNumber {
-    font-weight: 700;
-    font-size: 0.8rem;
-    margin-bottom: 6px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-bottom: 8px;
+    font-weight: 600;
   }
   .signal {
-    font-size: 1rem;
     font-weight: 900;
     text-align: center;
-    margin-bottom: 12px;
-    color: #00ff99;
-    animation: pulseSignal 2s infinite alternate;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 18px;
+    color: #4d94ff;
+    text-shadow: 0 0 8px #4d94ff;
   }
-  @keyframes pulseSignal {
-    0% { text-shadow: 0 0 5px #00ff99; color: #00ff99; }
-    50% { text-shadow: 0 0 20px #00ff99; color: #00ffcc; }
-    100% { text-shadow: 0 0 5px #00ff99; color: #00ff99; }
+  .signal.big {
+    color: #ff4d4d;
+    text-shadow: 0 0 8px #ff4d4d;
   }
-  .historyList {
+  .history-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 130px;
     overflow-y: auto;
-    flex-grow: 1;
-    max-height: 140px;
   }
-  .historyList li {
-    padding: 4px 6px;
-    margin-bottom: 4px;
-    border-radius: 6px;
+  .history-list li {
     background: #333;
+    margin-bottom: 5px;
+    padding: 4px 8px;
     display: flex;
     justify-content: space-between;
+    border-radius: 6px;
     font-weight: 600;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 12px;
   }
-  .historyList li span.number {
-    font-weight: 700;
-  }
-  .big {
+  .history-list li .number.big {
     color: #ff4d4d;
   }
-  .small {
+  .history-list li .number.small {
     color: #4d94ff;
   }
-  #botToggleBtn {
-    background: #00ff99;
-    border: none;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    color: #222;
-    margin: 0 auto 8px auto;
-    display: block;
-    transition: background 0.3s ease;
-    white-space: nowrap;
-  }
-  #botToggleBtn:hover {
-    background: #00cc66;
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: 600px) {
-    #mainPage {
+  @media (max-width: 480px) {
+    .container {
       flex-direction: column;
-      height: auto;
-      padding: 10px 5px;
-    }
-    #leftPrediction, #rightHistory {
-      max-width: 100%;
-      font-size: 0.7rem;
-      padding: 8px;
-      height: auto !important;
-      flex: none;
+      max-width: 95vw;
     }
   }
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
-<div id="loadingContainer">
-  <div id="loadingBar">
-    <div id="loadingProgress"></div>
-  </div>
-  <div id="loadingText">Loading 0%</div>
-</div>
-
-<!-- Login Page -->
-<div id="loginPage">
-  <h2>লগইন পেজ</h2>
-  <input type="password" id="tokenInput" placeholder="এক্সেস টোকেন দিন" autocomplete="off" />
-  <button id="loginBtn">লগইন</button>
-  <div id="tokenAnimation">112233</div>
-</div>
-
-<!-- Main Prediction Bot Page -->
-<div id="mainPage">
-  <div id="leftPrediction">
+<div class="container">
+  <div class="box" id="predictionBox">
     <h3>Prediction Box</h3>
     <button id="botToggleBtn">Start Bot</button>
-    <div class="periodNumber" id="predictionPeriod" title="Prediction Period">Period: -</div>
-    <div class="signal" id="predictionSignal" title="Prediction Signal">-</div>
+    <div class="period" id="predictionPeriod">Period: -</div>
+    <div class="signal" id="predictionSignal">-</div>
   </div>
-  <div id="rightHistory">
+  <div class="box" id="historyBox">
     <h3>Result History</h3>
-    <div class="periodNumber" id="latestPeriod" title="Latest Period">Latest Period: -</div>
-    <ul class="historyList" id="historyList" title="Last 4 Results">
-      <!-- Last 4 results will appear here -->
-    </ul>
+    <div class="period" id="latestPeriod">Latest Period: -</div>
+    <ul class="history-list" id="historyList"></ul>
   </div>
 </div>
 
 <script>
-  // Elements for loading and login
-  const loadingContainer = document.getElementById('loadingContainer');
-  const loadingProgress = document.getElementById('loadingProgress');
-  const loadingText = document.getElementById('loadingText');
-  const loginPage = document.getElementById('loginPage');
-  const tokenInput = document.getElementById('tokenInput');
-  const loginBtn = document.getElementById('loginBtn');
-  const tokenAnimation = document.getElementById('tokenAnimation');
-  const mainPage = document.getElementById('mainPage');
-
-  // Elements for prediction bot
-  const apiURL = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
   const predictionPeriodEl = document.getElementById('predictionPeriod');
   const predictionSignalEl = document.getElementById('predictionSignal');
   const latestPeriodEl = document.getElementById('latestPeriod');
   const historyListEl = document.getElementById('historyList');
   const botToggleBtn = document.getElementById('botToggleBtn');
 
-  let loadingPercent = 0;
   let botRunning = false;
   let predictionInterval = null;
   let historyInterval = null;
 
-  // Loading animation from 0 to 100%
-  function startLoading() {
-    const interval = setInterval(() => {
-      loadingPercent++;
-      loadingProgress.style.width = loadingPercent + '%';
-      loadingText.textContent = `Loading ${loadingPercent}%`;
+  // Example API URL (same as yours)
+  const apiURL = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
 
-      if (loadingPercent >= 100) {
-        clearInterval(interval);
-        loadingContainer.style.display = 'none';
-        loginPage.style.display = 'flex';
-        tokenInput.focus();
-      }
-    }, 30);
-  }
-
-  // Show token animation on input
-  tokenInput.addEventListener('input', () => {
-    if (tokenInput.value.length > 0) {
-      tokenAnimation.style.display = 'block';
-    } else {
-      tokenAnimation.style.display = 'none';
-    }
-  });
-
-  // Login button click handler
-  loginBtn.addEventListener('click', () => {
-    const token = tokenInput.value.trim();
-    if (token === '112233') {
-      loginPage.style.display = 'none';
-      mainPage.style.display = 'flex';
-    } else {
-      alert('ভুল এক্সেস টোকেন! সঠিক টোকেন দিন।');
-      tokenInput.value = '';
-      tokenAnimation.style.display = 'none';
-      tokenInput.focus();
-    }
-  });
-
-  // BIG if number >= 5, else SMALL
   function getBigSmall(number) {
     return number >= 5 ? 'BIG' : 'SMALL';
   }
 
-  // Fetch history from API
   async function fetchHistory() {
     try {
       const res = await fetch(apiURL);
@@ -348,10 +139,9 @@
     }
   }
 
-  // Update history box every 1 second
   async function updateHistory() {
     const history = await fetchHistory();
-    if (history.length === 0) return;
+    if (!history.length) return;
 
     const sorted = history.sort((a,b) => b.issueNumber.localeCompare(a.issueNumber));
     const latestIssue = sorted[0];
@@ -361,31 +151,33 @@
     historyListEl.innerHTML = '';
     last4.forEach(item => {
       const li = document.createElement('li');
-      const bigSmallClass = getBigSmall(item.number) === 'BIG' ? 'big' : 'small';
-      li.innerHTML = `<span class="period" title="Period">${item.issueNumber}</span> <span class="number ${bigSmallClass}" title="Number">${item.number}</span>`;
+      const bs = getBigSmall(item.number);
+      li.innerHTML = `
+        <span>${item.issueNumber}</span>
+        <span class="number ${bs.toLowerCase()}">${item.number}</span>
+      `;
       historyListEl.appendChild(li);
     });
   }
 
-  // Prediction logic: last 60 history, check last 3 results for BIG/SMALL majority
   async function updatePrediction() {
     const history = await fetchHistory();
-    if (history.length === 0) return;
+    if (!history.length) return;
 
     const sorted = history.sort((a,b) => b.issueNumber.localeCompare(a.issueNumber));
     const latestIssue = sorted[0];
-    const latestPeriodNumber = latestIssue.issueNumber;
+    let latestNumber = latestIssue.issueNumber;
 
-    // Increment last digits for prediction period
-    let prefix = latestPeriodNumber.slice(0, 13);
-    let suffix = latestPeriodNumber.slice(13);
+    // Increment the last numeric part for predicted period
+    let prefix = latestNumber.slice(0, 13);
+    let suffix = latestNumber.slice(13);
     let suffixNum = parseInt(suffix || '0', 10);
     suffixNum++;
     let predictionPeriod = prefix + suffixNum.toString().padStart(suffix.length || 1, '0');
     predictionPeriodEl.textContent = 'Period: ' + predictionPeriod;
 
-    const last60 = sorted.slice(0, 60);
-    const last3 = last60.slice(0, 3);
+    // Get last 3 results for signal
+    const last3 = sorted.slice(0, 3);
     let bigCount = 0, smallCount = 0;
     last3.forEach(item => {
       if (getBigSmall(item.number) === 'BIG') bigCount++;
@@ -393,25 +185,25 @@
     });
 
     let signal = 'NEUTRAL';
-    if (bigCount > smallCount && bigCount >= 2) signal = 'BIG';
-    else if (smallCount > bigCount && smallCount >= 2) signal = 'SMALL';
+    if (bigCount >= 2) signal = 'BIG';
+    else if (smallCount >= 2) signal = 'SMALL';
 
     predictionSignalEl.textContent = signal;
+    predictionSignalEl.classList.remove('big');
+    predictionSignalEl.style.textShadow = '';
     if(signal === 'BIG') {
-      predictionSignalEl.style.color = '#ff4d4d';
-      predictionSignalEl.style.textShadow = '0 0 20px #ff4d4d';
+      predictionSignalEl.classList.add('big');
     } else if(signal === 'SMALL') {
       predictionSignalEl.style.color = '#4d94ff';
-      predictionSignalEl.style.textShadow = '0 0 20px #4d94ff';
+      predictionSignalEl.style.textShadow = '0 0 8px #4d94ff';
     } else {
-      predictionSignalEl.style.color = '#aaa';
-      predictionSignalEl.style.textShadow = 'none';
+      predictionSignalEl.style.color = '#00ff99';
+      predictionSignalEl.style.textShadow = '0 0 5px #00ff99';
     }
   }
 
-  // Start bot
   function startBot() {
-    if (botRunning) return;
+    if(botRunning) return;
     botRunning = true;
     botToggleBtn.textContent = 'Stop Bot';
 
@@ -422,9 +214,8 @@
     historyInterval = setInterval(updateHistory, 1000);
   }
 
-  // Stop bot
   function stopBot() {
-    if (!botRunning) return;
+    if(!botRunning) return;
     botRunning = false;
     botToggleBtn.textContent = 'Start Bot';
 
@@ -435,21 +226,18 @@
     predictionSignalEl.textContent = '-';
     predictionSignalEl.style.color = '#00ff99';
     predictionSignalEl.style.textShadow = '0 0 5px #00ff99';
+    historyListEl.innerHTML = '';
+    latestPeriodEl.textContent = 'Latest Period: -';
   }
 
   botToggleBtn.addEventListener('click', () => {
-    if (botRunning) {
+    if(botRunning) {
       stopBot();
     } else {
       startBot();
     }
   });
 
-  // Initialize states
-  window.onload = () => {
-    startLoading();
-    stopBot();
-  };
 </script>
 
 </body>
